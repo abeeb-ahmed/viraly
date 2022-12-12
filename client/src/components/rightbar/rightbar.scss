@@ -46,6 +46,8 @@
             align-items: center;
             gap: 20px;
             position: relative;
+            font-size: 14px;
+            height: max-content;
 
             img {
               width: 40px;
@@ -71,6 +73,7 @@
             span {
               font-weight: 500;
               color: themed("textColor");
+              font-size: 14px;
             }
           }
 
