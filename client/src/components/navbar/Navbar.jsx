@@ -13,7 +13,7 @@ import { DarkModeContext } from "../../context/DarkModeContext";
 import { AuthContext } from "../../context/AuthContext";
 
 const Navbar = () => {
-  const { toggle, darkMode } = useContext(DarkModeContext);
+  const { toggleMode, darkMode } = useContext(DarkModeContext);
   const currentUser = {
     id: "1",
     name: "Jane Doe",
@@ -21,28 +21,32 @@ const Navbar = () => {
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP4Muy_Z2IIkQznvhyZkrn-NWsnURAlW1Nq-xK4AE&s",
   };
 
+  console.log(darkMode);
+
   return (
     <div className="navbar">
       <div className="left">
         <Link to="/" style={{ textDecoration: "none" }}>
           <span>Viraly</span>
         </Link>
-        <HomeOutlinedIcon />
-        {darkMode ? (
-          <WbSunnyOutlinedIcon onClick={toggle} />
-        ) : (
-          <DarkModeOutlinedIcon onClick={toggle} />
-        )}
-        <GridViewOutlinedIcon />
+        <div className="icons">
+          <HomeOutlinedIcon className="icon" />
+          {darkMode ? (
+            <WbSunnyOutlinedIcon className="icon" onClick={toggleMode} />
+          ) : (
+            <DarkModeOutlinedIcon className="icon" onClick={toggleMode} />
+          )}
+          <GridViewOutlinedIcon className="icon" />
+        </div>
         <div className="search">
           <SearchOutlinedIcon />
           <input type="text" placeholder="Search..." />
         </div>
       </div>
       <div className="right">
-        <PersonOutlinedIcon />
-        <EmailOutlinedIcon />
-        <NotificationsOutlinedIcon />
+        <PersonOutlinedIcon className="icon" />
+        <EmailOutlinedIcon className="icon" />
+        <NotificationsOutlinedIcon className="icon" />
         <div className="user">
           <img src={currentUser.profilePic} alt="" />
           <span>{currentUser.name}</span>

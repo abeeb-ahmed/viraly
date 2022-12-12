@@ -19,6 +19,17 @@
       align-items: center;
       gap: 30px;
 
+      @include mobile {
+        justify-content: space-between;
+        flex: 1;
+      }
+
+      .icons {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+      }
+
       span {
         font-weight: bold;
         font-size: 20px;
@@ -79,5 +90,9 @@
         }
       }
     }
+  }
+
+  .icon {
+    cursor: pointer;
   }
 }
