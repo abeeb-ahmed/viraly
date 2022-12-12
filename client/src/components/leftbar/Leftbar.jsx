@@ -15,7 +15,7 @@ import Fund from "../../assets/13.png";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 
-const LeftBar = () => {
+const Leftbar = () => {
   const { currentUser } = useContext(AuthContext);
 
   return (
@@ -92,4 +92,4 @@ const LeftBar = () => {
   );
 };
 
-export default LeftBar;
+export default Leftbar;
