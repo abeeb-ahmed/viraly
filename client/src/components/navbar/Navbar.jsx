@@ -14,14 +14,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 const Navbar = () => {
   const { toggleMode, darkMode } = useContext(DarkModeContext);
-  const currentUser = {
-    id: "1",
-    name: "Jane Doe",
-    profilePic:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP4Muy_Z2IIkQznvhyZkrn-NWsnURAlW1Nq-xK4AE&s",
-  };
-
-  console.log(darkMode);
+  const { currentUser } = useContext(AuthContext);
 
   return (
     <div className="navbar">
