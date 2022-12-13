@@ -24,6 +24,7 @@ const Navbar = () => {
         </Link>
         <div className="icons">
           <HomeOutlinedIcon className="icon" />
+
           {darkMode ? (
             <WbSunnyOutlinedIcon className="icon" onClick={toggleMode} />
           ) : (

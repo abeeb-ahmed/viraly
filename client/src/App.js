@@ -17,12 +17,7 @@ import Register from "./pages/register/Register";
 
 function App() {
   // temporary data
-  const currentUser = {
-    id: "1",
-    name: "Jane Doe",
-    profilePic:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP4Muy_Z2IIkQznvhyZkrn-NWsnURAlW1Nq-xK4AE&s",
-  };
+  const currentUser = null;
 
   const { darkMode } = useContext(DarkModeContext);
 
