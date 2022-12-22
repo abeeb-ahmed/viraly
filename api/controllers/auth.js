@@ -37,6 +37,7 @@ export const login = (req, res) => {
       return res.status(404).json("User not found");
     }
 
+    // compare hashed password
     const checkedPassword = bcrypt.compareSync(
       req.body.password,
       data[0].password
@@ -55,4 +56,14 @@ export const login = (req, res) => {
         .json(others);
     }
   });
+};
+
+export const logout = (req, res) => {
+  res
+    .clearCookie("accessToken", {
+      secure: true,
+      sameSite: "none",
+    })
+    .status(200)
+    .json("User has been successfully signed out");
 };
