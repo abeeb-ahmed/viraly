@@ -8,7 +8,7 @@
   justify-content: center;
 
   .card {
-    width: 50%;
+    width: 70%;
     display: flex;
     background-color: white;
     border-radius: 10px;
@@ -30,6 +30,7 @@
       padding: 50px;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       gap: 30px;
       color: white;
 

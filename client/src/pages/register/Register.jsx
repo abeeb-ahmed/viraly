@@ -1,7 +1,31 @@
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import { axiosInstance } from "../../axios";
 import "./register.scss";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+
+  const handleClick = async (e) => {
+    if ((!username, !email, !name, !password)) return;
+    e.preventDefault();
+
+    await axios.post("http://localhost:8000/api/auth/register", {
+      username,
+      name,
+      email,
+      password,
+    });
+
+    navigate("/login");
+  };
+
   return (
     <div className="register">
       <div className="card">
@@ -19,11 +43,35 @@ const Register = () => {
         <div className="right">
           <h1>Register</h1>
           <form>
-            <input type="text" placeholder="Username" />
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <input type="text" placeholder="Name" />
-            <button>Register</button>
+            <input
+              required
+              type="text"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              placeholder="Username"
+            />
+            <input
+              required
+              type="email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              placeholder="Email"
+            />
+            <input
+              required
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              placeholder="Password"
+            />
+            <input
+              required
+              type="text"
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              placeholder="Name"
+            />
+            <button onClick={handleClick}>Register</button>
             <span className="mobile">
               Already have an account?
               <Link to="/login" style={{ textDecoration: "none" }}>
