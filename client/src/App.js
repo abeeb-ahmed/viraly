@@ -16,8 +16,7 @@ import Profile from "./pages/profile/Profile";
 import Register from "./pages/register/Register";
 
 function App() {
-  // temporary data
-  const currentUser = null;
+  const { currentUser } = useContext(AuthContext);
 
   const { darkMode } = useContext(DarkModeContext);
 

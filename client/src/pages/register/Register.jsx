@@ -11,17 +11,24 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleClick = async (e) => {
-    if ((!username, !email, !name, !password)) return;
+    if (!username || !email || !name || !password) return;
     e.preventDefault();
-
-    await axios.post("http://localhost:8000/api/auth/register", {
-      username,
-      name,
-      email,
-      password,
-    });
+    setLoading(true);
+    try {
+      await axios.post("http://localhost:8000/api/auth/register", {
+        username,
+        name,
+        email,
+        password,
+      });
+    } catch (error) {
+      setError(error.response.data);
+    }
+    setLoading(false);
 
     navigate("/login");
   };
@@ -71,13 +78,16 @@ const Register = () => {
               value={name}
               placeholder="Name"
             />
-            <button onClick={handleClick}>Register</button>
+            <button onClick={handleClick} disabled={loading}>
+              Register
+            </button>
             <span className="mobile">
               Already have an account?
               <Link to="/login" style={{ textDecoration: "none" }}>
                 <span> Login</span>
               </Link>
             </span>
+            {error && error}
           </form>
         </div>
       </div>

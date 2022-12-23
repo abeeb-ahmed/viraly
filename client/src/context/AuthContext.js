@@ -8,14 +8,13 @@ export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("user")) || null
   );
-  const login = () => {
+  const login = (user) => {
     // TODO
-    setCurrentUser({
-      id: "1",
-      name: "Jane Doe",
-      profilePic:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP4Muy_Z2IIkQznvhyZkrn-NWsnURAlW1Nq-xK4AE&s",
-    });
+    setCurrentUser(user);
+  };
+
+  const logout = () => {
+    setCurrentUser(null);
   };
 
   useEffect(() => {
@@ -23,7 +22,7 @@ export const AuthContextProvider = ({ children }) => {
   }, [currentUser]);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login }}>
+    <AuthContext.Provider value={{ currentUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
