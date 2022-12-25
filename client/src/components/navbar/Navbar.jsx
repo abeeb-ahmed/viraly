@@ -41,8 +41,8 @@ const Navbar = () => {
           ) : (
             <DarkModeOutlinedIcon className="icon" onClick={toggleMode} />
           )}
-          <LogoutIcon className="icon" onClick={handleLogout} />
-          <GridViewOutlinedIcon className="icon" />
+          <LogoutIcon className="icon " onClick={handleLogout} />
+          <GridViewOutlinedIcon className="icon mobile" />
         </div>
         <div className="search">
           <SearchOutlinedIcon />
