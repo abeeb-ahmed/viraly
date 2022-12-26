@@ -34,42 +34,70 @@ const Share = () => {
   const handlePost = (e) => {
     e.preventDefault();
     if (file !== "") {
-      // Create the file metadata
-      /** @type {any} */
-      const metadata = {
-        contentType: "image/*",
-      };
-
       // Upload file and metadata
       const storageRef = ref(
         storage,
         "images/" + currentUser.name + Date.now()
       );
-      const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+      const uploadTask = uploadBytesResumable(storageRef, file);
 
-      uploadTask.on(() => {
-        // Upload completed successfully, now we can get the download URL
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setImg(downloadURL);
-        });
-      });
-      setFile("");
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          // Upload completed successfully, now we can get the download URL
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImg(downloadURL);
+          });
+        }
+      );
     }
 
     mutation.mutate({ desc, img });
+    setFile("");
+    setDesc("");
   };
 
   return (
     <div className="share">
       <div className="container">
         <div className="top">
-          <img src={currentUser.profilePic} alt="" />
-          <input
-            type="text"
-            placeholder={`What's on your mind ${currentUser.name}?`}
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
+          <img
+            src={
+              currentUser.profilePic ||
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+            }
+            alt=""
           />
+          <div className="flex-row">
+            <div className="left">
+              <input
+                type="text"
+                placeholder={`What's on your mind ${currentUser.name}?`}
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
+              />
+            </div>
+            <div className="right">
+              {file !== "" && <img src={URL.createObjectURL(file)} alt="" />}
+            </div>
+          </div>
         </div>
         <hr />
         <div className="bottom">

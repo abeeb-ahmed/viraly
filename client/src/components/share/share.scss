@@ -16,6 +16,7 @@
         display: flex;
         align-items: center;
         gap: 20px;
+        width: 100%;
         img {
           width: 40px;
           height: 40px;
@@ -30,6 +31,22 @@
           background-color: transparent;
           width: 60%;
           color: themed("textColor");
+        }
+
+        .flex-row {
+          display: flex;
+          align-items: center;
+          flex: 1;
+
+          .left {
+            flex: 1;
+          }
+
+          .right {
+            img {
+              border-radius: 0;
+            }
+          }
         }
       }
 

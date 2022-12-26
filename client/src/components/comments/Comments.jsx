@@ -26,13 +26,25 @@ const Comments = () => {
   return (
     <div className="comments">
       <div className="write">
-        <img src={currentUser.profilePic} alt="" />
+        <img
+          src={
+            currentUser.profilePic ||
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+          }
+          alt=""
+        />
         <input type="text" placeholder="write a comment" />
         <button>Send</button>
       </div>
       {comments.map((comment) => (
         <div className="comment">
-          <img src={comment.profilePicture} alt="" />
+          <img
+            src={
+              comment.profilePicture ||
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+            }
+            alt=""
+          />
           <div className="info">
             <span>{comment.name}</span>
             <p>{comment.desc}</p>

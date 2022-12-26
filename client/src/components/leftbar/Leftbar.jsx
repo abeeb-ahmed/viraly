@@ -23,7 +23,13 @@ const Leftbar = () => {
       <div className="container">
         <div className="menu">
           <div className="user">
-            <img src={currentUser.profilePic} alt="" />
+            <img
+              src={
+                currentUser.profilePic ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+              }
+              alt=""
+            />
             <span>{currentUser.name}</span>
           </div>
           <div className="item">
