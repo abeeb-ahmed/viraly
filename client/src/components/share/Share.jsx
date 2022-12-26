@@ -18,6 +18,7 @@ const Share = () => {
 
   const queryClient = useQueryClient();
 
+  // send post to db using react query
   const mutation = useMutation(
     (newPost) => {
       return axiosInstance.post("/posts", newPost);
@@ -39,14 +40,13 @@ const Share = () => {
         contentType: "image/*",
       };
 
-      // Upload file and metadata to the object 'images/mountains.jpg'
+      // Upload file and metadata
       const storageRef = ref(
         storage,
         "images/" + currentUser.name + Date.now()
       );
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
-      // Listen for state changes, errors, and completion of the upload.
       uploadTask.on(() => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
