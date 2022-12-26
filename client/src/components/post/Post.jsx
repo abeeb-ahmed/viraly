@@ -8,9 +8,17 @@ import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
 import { useState } from "react";
 import moment from "moment";
+import { axiosInstance } from "../../axios";
+import { useQuery } from "react-query";
 
 const Post = ({ post }) => {
   const [commentOpen, setCommentOpen] = useState(false);
+
+  const { isLoading, error, data } = useQuery(["comments"], () =>
+    axiosInstance.get(`/comments?postId=${post.id}`).then((res) => {
+      return res.data;
+    })
+  );
 
   //TEMPORARY
   const liked = false;
@@ -50,14 +58,14 @@ const Post = ({ post }) => {
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
-            12 Comments
+            {data?.length} Comments
           </div>
           <div className="item">
             <ShareOutlinedIcon />
             Share
           </div>
         </div>
-        {commentOpen && <Comments />}
+        {commentOpen && <Comments postId={post.id} />}
       </div>
     </div>
   );
