@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import moment from "moment";
+
 import { db } from "../connect.js";
 
 export const getPosts = (req, res) => {
@@ -15,6 +17,29 @@ export const getPosts = (req, res) => {
     db.query(q, [userInfo.id, userInfo.id], (err, data) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json(data);
+    });
+  });
+};
+
+export const sendPost = (req, res) => {
+  const token = req.cookie.access;
+  if (!token) return res.status(401).json("Not logged in");
+
+  jwt.verify(token, process.env.JWT_PASSWORD, (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid");
+
+    const q = "INSERT INTO ( desc, img, userId, createdAt) VALUES (?)";
+
+    const values = [
+      req.body.desc,
+      req.body.img,
+      userInfo.id,
+      moment(Date.now().format("YYYY/MM/DD HH:mm:ss")),
+    ];
+
+    db.query(q, [values], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.staus(200).json(data);
     });
   });
 };
