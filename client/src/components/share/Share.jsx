@@ -6,6 +6,8 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase";
+import { useMutation, useQueryClient } from "react-query";
+import { axiosInstance } from "../../axios";
 
 const Share = () => {
   const { currentUser } = useContext(AuthContext);
@@ -14,9 +16,23 @@ const Share = () => {
   const [file, setFile] = useState("");
   const [img, setImg] = useState("");
 
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(
+    (newPost) => {
+      return axiosInstance.post("/posts", newPost);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["posts"]);
+        setDesc("");
+      },
+    }
+  );
+
   const handlePost = (e) => {
     e.preventDefault();
-    if (file) {
+    if (file !== "") {
       // Create the file metadata
       /** @type {any} */
       const metadata = {
@@ -39,6 +55,8 @@ const Share = () => {
       });
       setFile("");
     }
+
+    mutation.mutate({ desc, img });
   };
 
   return (
