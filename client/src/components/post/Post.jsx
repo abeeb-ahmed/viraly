@@ -14,11 +14,19 @@ import { useQuery } from "react-query";
 const Post = ({ post }) => {
   const [commentOpen, setCommentOpen] = useState(false);
 
-  const { isLoading, error, data } = useQuery(["comments"], () =>
+  const commentsQuery = useQuery(["comments"], () =>
     axiosInstance.get(`/comments?postId=${post.id}`).then((res) => {
       return res.data;
     })
   );
+
+  const likesQuery = useQuery(["likes"], () =>
+    axiosInstance.get(`/likes?postId=${post.id}`).then((res) => {
+      return res.data;
+    })
+  );
+
+  console.log();
 
   //TEMPORARY
   const liked = false;
@@ -54,11 +62,11 @@ const Post = ({ post }) => {
         <div className="info">
           <div className="item">
             {liked ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-            12 Likes
+            {likesQuery.data?.length} Likes
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
-            {data?.length} Comments
+            {commentsQuery.data?.length} Comments
           </div>
           <div className="item">
             <ShareOutlinedIcon />

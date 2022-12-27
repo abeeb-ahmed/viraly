@@ -6,6 +6,7 @@ import userRoutes from "./routes/users.js";
 import authRouters from "./routes/auth.js";
 import postRouters from "./routes/posts.js";
 import commentRouters from "./routes/comments.js";
+import likeRouters from "./routes/likes.js";
 
 const app = express();
 // Add Access Control Allow Origin headers
@@ -22,6 +23,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRouters);
 app.use("/api/posts", postRouters);
 app.use("/api/comments", commentRouters);
+app.use("/api/likes", likeRouters);
 
 app.listen(8000, () => {
   console.log("Connected on port 8000");
