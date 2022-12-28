@@ -1,13 +1,16 @@
 import { useQuery } from "react-query";
+import { useLocation } from "react-router-dom";
 import { axiosInstance } from "../../axios";
 import Post from "../post/Post";
 import "./posts.scss";
 
-const Posts = () => {
+const Posts = ({ userId = "" }) => {
   const { isLoading, error, data } = useQuery(["posts"], () =>
-    axiosInstance.get("/posts").then((res) => {
-      return res.data;
-    })
+    axiosInstance
+      .get(userId ? `/posts?userId=${userId}` : "/posts")
+      .then((res) => {
+        return res.data;
+      })
   );
 
   return (
