@@ -12,71 +12,102 @@ import Posts from "../../components/posts/Posts";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
 import { axiosInstance } from "../../axios";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Profile = () => {
+  const { currentUser } = useContext(AuthContext);
   const location = useLocation();
   const userId = location.pathname.split("/")[2];
 
-  const { isLoading, error, data } = useQuery(["users"], () =>
+  const userQuery = useQuery(["user"], () =>
     axiosInstance.get(`/users/find/${userId}`).then((res) => {
       return res.data;
     })
   );
 
+  const relationshipsQuery = useQuery(["relationships"], () =>
+    axiosInstance
+      .get("/relationships", { followerUserId: userId })
+      .then((res) => {
+        return res.data;
+      })
+  );
+
+  console.log(relationshipsQuery.data);
+
   return (
     <div className="profile">
-      <div className="images">
-        <img
-          src="https://images.pexels.com/photos/13440765/pexels-photo-13440765.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          alt=""
-          className="cover"
-        />
-        <img
-          src="https://images.pexels.com/photos/14028501/pexels-photo-14028501.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
-          alt=""
-          className="profilePic"
-        />
-      </div>
-      <div className="profileContainer">
-        <div className="uInfo">
-          <div className="left">
-            <a href="http://facebook.com">
-              <FacebookTwoToneIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <InstagramIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <TwitterIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <LinkedInIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <PinterestIcon fontSize="large" />
-            </a>
+      {userQuery.isLoading ? (
+        "Loading..."
+      ) : (
+        <>
+          <div className="images">
+            <img
+              src={
+                userQuery.data.coverPic ||
+                "https://images.pexels.com/photos/13440765/pexels-photo-13440765.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              }
+              alt=""
+              className="cover"
+            />
+            <img
+              src={
+                userQuery.data.profilePic ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+              }
+              alt=""
+              className="profilePic"
+            />
           </div>
-          <div className="center">
-            <span>{data?.name}</span>
-            <div className="info">
-              <div className="item">
-                <PlaceIcon />
-                <span>{data?.city}</span>
+          <div className="profileContainer">
+            <div className="uInfo">
+              <div className="left">
+                <a href="http://facebook.com">
+                  <FacebookTwoToneIcon fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <InstagramIcon fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <TwitterIcon fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <LinkedInIcon fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <PinterestIcon fontSize="large" />
+                </a>
               </div>
-              <div className="item">
-                <LanguageIcon />
-                <span>{data?.website}</span>
+              <div className="center">
+                <span>{userQuery.data?.name}</span>
+                <div className="info">
+                  <div className="item">
+                    <PlaceIcon />
+                    <span>{userQuery.data?.city}</span>
+                  </div>
+                  <div className="item">
+                    <LanguageIcon />
+                    <span>{userQuery.data?.website}</span>
+                  </div>
+                </div>
+                <button>
+                  {currentUser.id === userQuery.data.id
+                    ? "Update"
+                    : relationshipsQuery.data.includes(currentUser.id)
+                    ? "Unfollow"
+                    : "Follow"}
+                </button>
+              </div>
+              <div className="right">
+                <EmailOutlinedIcon />
+                <MoreVertIcon />
               </div>
             </div>
-            <button>follow</button>
+            <Posts />
           </div>
-          <div className="right">
-            <EmailOutlinedIcon />
-            <MoreVertIcon />
-          </div>
-        </div>
-        <Posts />
-      </div>
+        </>
+      )}
     </div>
   );
 };
