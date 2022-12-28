@@ -9,8 +9,20 @@ import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from "../../components/posts/Posts";
+import { useLocation } from "react-router-dom";
+import { useQuery } from "react-query";
+import { axiosInstance } from "../../axios";
 
 const Profile = () => {
+  const location = useLocation();
+  const userId = location.pathname.split("/")[2];
+
+  const { isLoading, error, data } = useQuery(["users"], () =>
+    axiosInstance.get(`/users/find/${userId}`).then((res) => {
+      return res.data;
+    })
+  );
+
   return (
     <div className="profile">
       <div className="images">
@@ -45,15 +57,15 @@ const Profile = () => {
             </a>
           </div>
           <div className="center">
-            <span>Jane Doe</span>
+            <span>{data?.name}</span>
             <div className="info">
               <div className="item">
                 <PlaceIcon />
-                <span>USA</span>
+                <span>{data?.city}</span>
               </div>
               <div className="item">
                 <LanguageIcon />
-                <span>lama.dev</span>
+                <span>{data?.website}</span>
               </div>
             </div>
             <button>follow</button>
