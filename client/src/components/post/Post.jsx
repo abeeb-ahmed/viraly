@@ -32,7 +32,7 @@ const Post = ({ post }) => {
     }
   );
 
-  const commentsQuery = useQuery(["comments"], () =>
+  const commentsQuery = useQuery(["comments", post.id], () =>
     axiosInstance.get(`/comments?postId=${post.id}`).then((res) => {
       return res.data;
     })
