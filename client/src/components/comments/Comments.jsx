@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import "./comments.scss";
 import { AuthContext } from "../../context/AuthContext";
 import { axiosInstance } from "../../axios";
+import moment from "moment";
 
 const Comments = ({ postId }) => {
   const { currentUser } = useContext(AuthContext);
@@ -68,7 +69,7 @@ const Comments = ({ postId }) => {
             <span>{comment.name}</span>
             <p>{comment.desc}</p>
           </div>
-          <span className="date">1 hour ago</span>
+          <span className="date">{moment(comment.createdAt).fromNow()}</span>
         </div>
       ))}
     </div>
