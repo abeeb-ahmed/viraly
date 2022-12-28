@@ -10,7 +10,7 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from "../../components/posts/Posts";
 import { useLocation } from "react-router-dom";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { axiosInstance } from "../../axios";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -18,7 +18,9 @@ import { AuthContext } from "../../context/AuthContext";
 const Profile = () => {
   const { currentUser } = useContext(AuthContext);
   const location = useLocation();
-  const userId = location.pathname.split("/")[2];
+  const userId = parseInt(location.pathname.split("/")[2]);
+
+  const queryClient = useQueryClient();
 
   const userQuery = useQuery(["user"], () =>
     axiosInstance.get(`/users/find/${userId}`).then((res) => {
@@ -27,18 +29,49 @@ const Profile = () => {
   );
 
   const relationshipsQuery = useQuery(["relationships"], () =>
-    axiosInstance
-      .get("/relationships", { followerUserId: userId })
-      .then((res) => {
-        return res.data;
-      })
+    axiosInstance.get(`/relationships?followedUserId=${userId}`).then((res) => {
+      return res.data;
+    })
   );
 
-  console.log(relationshipsQuery.data);
+  // post request to follow
+  const postMutation = useMutation(
+    () => {
+      return axiosInstance.post("/relationships", { followedUserId: userId });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["relationships"]);
+      },
+    }
+  );
+
+  // delete request to unfollow
+  const deleteMutation = useMutation(
+    (userId) => {
+      const res = axiosInstance.delete(
+        `/relationships?followedUserId=${userId}`
+      );
+      console.log(res);
+      return res;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["relationships"]);
+      },
+    }
+  );
+
+  // handle follow and unfollow
+  const handleFollow = () => {
+    relationshipsQuery.data?.includes(currentUser.id)
+      ? deleteMutation.mutate(userId)
+      : postMutation.mutate();
+  };
 
   return (
     <div className="profile">
-      {userQuery.isLoading ? (
+      {userQuery.isLoading || relationshipsQuery.isLoading ? (
         "Loading..."
       ) : (
         <>
@@ -91,13 +124,15 @@ const Profile = () => {
                     <span>{userQuery.data?.website}</span>
                   </div>
                 </div>
-                <button>
-                  {currentUser.id === userQuery.data.id
-                    ? "Update"
-                    : relationshipsQuery.data.includes(currentUser.id)
-                    ? "Unfollow"
-                    : "Follow"}
-                </button>
+                {currentUser.id === userQuery.data.id ? (
+                  <button>Update</button>
+                ) : (
+                  <button onClick={handleFollow}>
+                    {relationshipsQuery.data?.includes(currentUser.id)
+                      ? "Unfollow"
+                      : "follow"}
+                  </button>
+                )}
               </div>
               <div className="right">
                 <EmailOutlinedIcon />
