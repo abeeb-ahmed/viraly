@@ -13,7 +13,7 @@ const Share = () => {
   const { currentUser } = useContext(AuthContext);
 
   const [desc, setDesc] = useState("");
-  const [file, setFile] = useState("");
+  const [file, setFile] = useState(null);
   const [img, setImg] = useState("");
 
   const queryClient = useQueryClient();
@@ -31,46 +31,51 @@ const Share = () => {
     }
   );
 
-  const handlePost = (e) => {
-    e.preventDefault();
-    if (file !== "") {
-      // Upload file and metadata
-      const storageRef = ref(
-        storage,
-        "images/" + currentUser.name + Date.now()
-      );
-      const uploadTask = uploadBytesResumable(storageRef, file);
+  const uploadImage = (file) => {
+    // Upload file and metadata
+    const storageRef = ref(storage, "images/" + currentUser.name + Date.now());
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-          }
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          // Upload completed successfully, now we can get the download URL
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImg(downloadURL);
-          });
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
         }
-      );
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setImg(downloadURL);
+        });
+      }
+    );
+  };
+
+  const handlePost = async (e) => {
+    e.preventDefault();
+
+    if (!desc || !file) return;
+
+    {
+      file && uploadImage(file);
     }
 
     mutation.mutate({ desc, img });
-    setFile("");
+    setFile(null);
+    setImg("");
     setDesc("");
   };
 
@@ -95,7 +100,7 @@ const Share = () => {
               />
             </div>
             <div className="right">
-              {file !== "" && <img src={URL.createObjectURL(file)} alt="" />}
+              {file !== null && <img src={URL.createObjectURL(file)} alt="" />}
             </div>
           </div>
         </div>
