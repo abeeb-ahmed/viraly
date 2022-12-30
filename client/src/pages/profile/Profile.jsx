@@ -97,23 +97,6 @@ const Profile = () => {
           </div>
           <div className="profileContainer">
             <div className="uInfo">
-              <div className="left">
-                <a href="http://facebook.com">
-                  <FacebookTwoToneIcon fontSize="large" />
-                </a>
-                <a href="http://facebook.com">
-                  <InstagramIcon fontSize="large" />
-                </a>
-                <a href="http://facebook.com">
-                  <TwitterIcon fontSize="large" />
-                </a>
-                <a href="http://facebook.com">
-                  <LinkedInIcon fontSize="large" />
-                </a>
-                <a href="http://facebook.com">
-                  <PinterestIcon fontSize="large" />
-                </a>
-              </div>
               <div className="center">
                 <span>{userQuery.data?.name}</span>
                 <div className="info">
@@ -135,10 +118,6 @@ const Profile = () => {
                       : "follow"}
                   </button>
                 )}
-              </div>
-              <div className="right">
-                <EmailOutlinedIcon />
-                <MoreVertIcon />
               </div>
             </div>
             <Posts userId={userId} />
