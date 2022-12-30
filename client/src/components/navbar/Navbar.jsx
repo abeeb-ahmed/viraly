@@ -8,7 +8,7 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "../../context/DarkModeContext";
 import { AuthContext } from "../../context/AuthContext";
@@ -17,6 +17,7 @@ import axios from "axios";
 const Navbar = () => {
   const { toggleMode, darkMode } = useContext(DarkModeContext);
   const { currentUser, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -34,7 +35,7 @@ const Navbar = () => {
           <span>Viraly</span>
         </Link>
         <div className="icons">
-          <HomeOutlinedIcon className="icon" />
+          <HomeOutlinedIcon className="icon" onClick={() => navigate("/")} />
 
           {darkMode ? (
             <WbSunnyOutlinedIcon className="icon" onClick={toggleMode} />
@@ -53,16 +54,21 @@ const Navbar = () => {
         <PersonOutlinedIcon className="icon" />
         <EmailOutlinedIcon className="icon" />
         <NotificationsOutlinedIcon className="icon" />
-        <div className="user">
-          <img
-            src={
-              currentUser.profilePic ||
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
-            }
-            alt=""
-          />
-          <span>{currentUser.name}</span>
-        </div>
+        <Link
+          to={`/profile/${currentUser.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <div className="user">
+            <img
+              src={
+                currentUser.profilePic ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+              }
+              alt=""
+            />
+            <span>{currentUser.name}</span>
+          </div>
+        </Link>
       </div>
     </div>
   );

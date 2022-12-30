@@ -35,7 +35,7 @@ const Update = ({ setUpdateOpen }) => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["posts"]);
+        queryClient.invalidateQueries(["user"]);
       },
     }
   );
@@ -202,7 +202,7 @@ const Update = ({ setUpdateOpen }) => {
               name="profilePic"
               id="profilePic"
               accept="image/*"
-              onchange={(e) => setProfilePicFile(e.target.files[0])}
+              onChange={(e) => setProfilePicFile(e.target.files[0])}
             />
           </div>
           <div className="row">
@@ -212,7 +212,7 @@ const Update = ({ setUpdateOpen }) => {
               name="profilePic"
               id="coverPic"
               accept="image/*"
-              onchange={(e) => setCoverPicFile(e.target.files[0])}
+              onChange={(e) => setCoverPicFile(e.target.files[0])}
             />
           </div>
           <button onClick={handleUpdate}>Update</button>
