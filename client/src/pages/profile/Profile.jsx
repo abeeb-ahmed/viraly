@@ -12,11 +12,13 @@ import Posts from "../../components/posts/Posts";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { axiosInstance } from "../../axios";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import Update from "../../components/update/Update";
 
 const Profile = () => {
   const { currentUser } = useContext(AuthContext);
+  const [updateOpen, setUpdateOpen] = useState(false);
   const location = useLocation();
   const userId = parseInt(location.pathname.split("/")[2]);
 
@@ -78,7 +80,7 @@ const Profile = () => {
           <div className="images">
             <img
               src={
-                userQuery.data.coverPic ||
+                userQuery.data?.coverPic ||
                 "https://images.pexels.com/photos/13440765/pexels-photo-13440765.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
               }
               alt=""
@@ -86,7 +88,7 @@ const Profile = () => {
             />
             <img
               src={
-                userQuery.data.profilePic ||
+                userQuery.data?.profilePic ||
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
               }
               alt=""
@@ -125,7 +127,7 @@ const Profile = () => {
                   </div>
                 </div>
                 {currentUser.id === userQuery.data.id ? (
-                  <button>Update</button>
+                  <button onClick={() => setUpdateOpen(true)}>Update</button>
                 ) : (
                   <button onClick={handleFollow}>
                     {relationshipsQuery.data?.includes(currentUser.id)
@@ -141,6 +143,7 @@ const Profile = () => {
             </div>
             <Posts userId={userId} />
           </div>
+          {updateOpen && <Update setUpdateOpen={setUpdateOpen} />}
         </>
       )}
     </div>
