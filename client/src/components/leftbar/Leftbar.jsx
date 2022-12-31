@@ -15,8 +15,6 @@ import Fund from "../../assets/13.png";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "react-query";
-import { axiosInstance } from "../../axios";
 
 const Leftbar = () => {
   const { currentUser } = useContext(AuthContext);

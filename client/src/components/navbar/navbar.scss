@@ -94,5 +94,68 @@
 
   .icon {
     cursor: pointer;
+
+    &.laptop {
+      display: block;
+
+      @include mobile {
+        display: none;
+      }
+    }
+
+    &.mobile {
+      display: none;
+
+      @include mobile {
+        display: block;
+      }
+    }
+  }
+
+  .layer {
+    display: none;
+
+    @include mobile {
+      display: flex;
+      z-index: 100;
+      background-color: rgba(0, 0, 0, 0.205);
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      right: 0;
+    }
+  }
+
+  .mobileNav {
+    display: none;
+
+    @include mobile {
+      z-index: 999;
+      width: 70vw;
+      display: flex;
+      height: 100vh;
+      position: fixed;
+      transform: translateX(100%);
+      transition: all ease-out 0.3s;
+      top: 0;
+      right: 0;
+
+      @include themify($themes) {
+        color: themed("textColorSoft");
+        background-color: themed("bgSoft");
+      }
+
+      &.open {
+        transform: translateX(0);
+        transition: all ease-out 0.3s;
+      }
+    }
+
+    .icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
   }
 }

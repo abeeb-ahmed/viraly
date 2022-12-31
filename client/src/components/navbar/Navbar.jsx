@@ -8,14 +8,16 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CloseIcon from "@mui/icons-material/Close";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "../../context/DarkModeContext";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useState } from "react";
 
 const Navbar = () => {
+  const [navOpen, setNavOpen] = useState(false);
   const { toggleMode, darkMode } = useContext(DarkModeContext);
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -44,7 +46,11 @@ const Navbar = () => {
             <DarkModeOutlinedIcon className="icon" onClick={toggleMode} />
           )}
           <LogoutIcon className="icon " onClick={handleLogout} />
-          <GridViewOutlinedIcon className="icon mobile" />
+          <GridViewOutlinedIcon className="icon laptop" />
+          <GridViewOutlinedIcon
+            className="icon mobile"
+            onClick={() => setNavOpen(true)}
+          />
         </div>
         <div className="search">
           <SearchOutlinedIcon />
@@ -70,6 +76,12 @@ const Navbar = () => {
             <span>{currentUser.name}</span>
           </div>
         </Link>
+      </div>
+      {navOpen && (
+        <div className="layer" onClick={() => setNavOpen(false)}></div>
+      )}
+      <div className={`mobileNav ${navOpen ? "open" : ""}`}>
+        <CloseIcon className="icon" onClick={() => setNavOpen(false)} />
       </div>
     </div>
   );
