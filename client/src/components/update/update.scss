@@ -31,6 +31,10 @@
       @include themify($themes) {
         color: themed("textColorSoft");
       }
+
+      @include mobile {
+        font-size: 20px;
+      }
     }
 
     .close {

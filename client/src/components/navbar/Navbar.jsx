@@ -14,18 +14,11 @@ import { DarkModeContext } from "../../context/DarkModeContext";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { useQuery } from "react-query";
-import { axiosInstance } from "../../axios";
 
 const Navbar = () => {
   const { toggleMode, darkMode } = useContext(DarkModeContext);
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const userQuery = useQuery(["user"], () =>
-    axiosInstance.get(`/users/find/${currentUser.id}`).then((res) => {
-      return res.data;
-    })
-  );
 
   const handleLogout = async () => {
     try {
@@ -69,16 +62,12 @@ const Navbar = () => {
           <div className="user">
             <img
               src={
-                userQuery.data
-                  ? userQuery.data?.profilePic
-                  : currentUser?.profilePic ||
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+                currentUser.profilePic ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
               }
               alt=""
             />
-            <span>
-              {userQuery.data ? userQuery.data?.name : currentUser.name}
-            </span>
+            <span>{currentUser.name}</span>
           </div>
         </Link>
       </div>

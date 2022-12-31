@@ -21,12 +21,6 @@ import { axiosInstance } from "../../axios";
 const Leftbar = () => {
   const { currentUser } = useContext(AuthContext);
 
-  const userQuery = useQuery(["user"], () =>
-    axiosInstance.get(`/users/find/${currentUser.id}`).then((res) => {
-      return res.data;
-    })
-  );
-
   return (
     <div className="leftBar">
       <div className="container">
@@ -38,16 +32,12 @@ const Leftbar = () => {
             <div className="user">
               <img
                 src={
-                  userQuery.data
-                    ? userQuery.data?.profilePic
-                    : currentUser?.profilePic ||
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+                  currentUser?.profilePic ||
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
                 }
                 alt=""
               />
-              <span>
-                {userQuery.data ? userQuery.data?.name : currentUser.name}
-              </span>
+              <span>{currentUser.name}</span>
             </div>
           </Link>
           <div className="item">

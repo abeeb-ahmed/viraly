@@ -27,6 +27,10 @@ const Register = () => {
       });
     } catch (error) {
       setError(error.response.data);
+      setEmail("");
+      setName("");
+      setPassword("");
+      setUsername("");
     }
     setLoading(false);
 
