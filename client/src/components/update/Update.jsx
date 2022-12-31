@@ -21,10 +21,9 @@ const Update = ({ setUpdateOpen }) => {
   const [email, setEmail] = useState(userQuery.data.email);
   const [city, setCity] = useState(userQuery.data.city);
   const [website, setWebsite] = useState(userQuery.data.website);
-  const [coverPicFile, setCoverPicFile] = useState(null);
   const [profilePicFile, setProfilePicFile] = useState(null);
   const [profilePic, setProfilePic] = useState(userQuery.data.profilePic);
-  const [coverPic, setCoverPic] = useState(userQuery.data.coverPic);
+  const [isLoading, setIsLoading] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -40,106 +39,88 @@ const Update = ({ setUpdateOpen }) => {
     }
   );
 
+  // handle image upload
+  const uploadImage = async (file) => {
+    return new Promise((resolve, reject) => {
+      // Upload file and metadata
+      const storageRef = ref(
+        storage,
+        "images/" + currentUser.name + Date.now()
+      );
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+            default:
+              break;
+          }
+        },
+        (error) => {
+          console.log(error);
+          reject(error);
+        },
+        () => {
+          // Upload completed successfully, now we can get the download URL
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            mutation.mutate({
+              username,
+              email,
+              name,
+              website,
+              city,
+              profilePic: downloadURL,
+            });
+            setName("");
+            setUsername("");
+            setEmail("");
+            setWebsite("");
+            setCity("");
+            setProfilePic("");
+            setProfilePic(null);
+            setIsLoading(false);
+            setUpdateOpen(false);
+          });
+        }
+      );
+    });
+  };
+
   // handle user profile update
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
 
-    // upload profile picture
-    if (profilePicFile) {
-      // Upload file and metadata
-      const storageRef = ref(
-        storage,
-        "images/" + currentUser.name + Date.now()
-      );
-      const uploadTask = uploadBytesResumable(storageRef, profilePicFile);
+    setIsLoading(true);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-            default:
-              return;
-          }
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          // Upload completed successfully, now we can get the download URL
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setProfilePic(downloadURL);
-          });
-        }
-      );
-    }
-
-    // upload cover picture
-    if (coverPicFile) {
-      // Upload file and metadata
-      const storageRef = ref(
-        storage,
-        "images/" + currentUser.name + Date.now()
-      );
-      const uploadTask = uploadBytesResumable(storageRef, coverPicFile);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-            default:
-              return;
-          }
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          // Upload completed successfully, now we can get the download URL
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setCoverPic(downloadURL);
-          });
-        }
-      );
-    }
-
-    mutation.mutate({
-      username,
-      email,
-      name,
-      website,
-      city,
-      profilePic,
-      coverPic,
-    });
+    profilePicFile
+      ? await uploadImage(profilePicFile)
+      : mutation.mutate({
+          username,
+          email,
+          name,
+          website,
+          city,
+          profilePic,
+        });
     setName("");
     setUsername("");
     setEmail("");
     setWebsite("");
     setCity("");
     setProfilePic("");
-    setCoverPic("");
-    setCoverPicFile(null);
     setProfilePic(null);
+    setIsLoading(false);
     setUpdateOpen(false);
   };
 
@@ -205,17 +186,9 @@ const Update = ({ setUpdateOpen }) => {
               onChange={(e) => setProfilePicFile(e.target.files[0])}
             />
           </div>
-          <div className="row">
-            <label>Cover Picture</label>
-            <input
-              type="file"
-              name="profilePic"
-              id="coverPic"
-              accept="image/*"
-              onChange={(e) => setCoverPicFile(e.target.files[0])}
-            />
-          </div>
-          <button onClick={handleUpdate}>Update</button>
+          <button disabled={isLoading} onClick={handleUpdate}>
+            Update
+          </button>
         </form>
       </div>
     </div>

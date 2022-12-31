@@ -33,7 +33,8 @@ const Rightbar = () => {
             </div>
           </div>
         </div>
-        <div className="item">
+        {/*  RECENT ACTIVITY AND ONLINE FRIENDS TO BE DONE LATER */}
+        {/* <div className="item">
           <span>Latest Activities</span>
           <div className="user">
             <div className="userInfo">
@@ -83,8 +84,8 @@ const Rightbar = () => {
             </div>
             <span>1 min ago</span>
           </div>
-        </div>
-        <div className="item">
+        </div> */}
+        {/* <div className="item">
           <span>Online Friends</span>
           <div className="user">
             <div className="userInfo">
@@ -196,7 +197,7 @@ const Rightbar = () => {
               <span>Jane Doe</span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

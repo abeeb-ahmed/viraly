@@ -88,6 +88,11 @@
         cursor: pointer;
         margin-top: 10px;
         font-weight: 500;
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.2;
+        }
       }
     }
 

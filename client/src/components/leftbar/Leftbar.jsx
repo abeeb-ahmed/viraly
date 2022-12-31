@@ -15,9 +15,17 @@ import Fund from "../../assets/13.png";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "react-query";
+import { axiosInstance } from "../../axios";
 
 const Leftbar = () => {
   const { currentUser } = useContext(AuthContext);
+
+  const userQuery = useQuery(["user"], () =>
+    axiosInstance.get(`/users/find/${currentUser.id}`).then((res) => {
+      return res.data;
+    })
+  );
 
   return (
     <div className="leftBar">
@@ -30,12 +38,16 @@ const Leftbar = () => {
             <div className="user">
               <img
                 src={
-                  currentUser.profilePic ||
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+                  userQuery.data
+                    ? userQuery.data?.profilePic
+                    : currentUser?.profilePic ||
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
                 }
                 alt=""
               />
-              <span>{currentUser.name}</span>
+              <span>
+                {userQuery.data ? userQuery.data?.name : currentUser.name}
+              </span>
             </div>
           </Link>
           <div className="item">
