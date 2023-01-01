@@ -8,7 +8,7 @@ import { storage } from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const Update = ({ setUpdateOpen }) => {
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, updateUser } = useContext(AuthContext);
 
   const userQuery = useQuery(["user"], () =>
     axiosInstance.get(`/users/find/${currentUser.id}`).then((res) => {
@@ -113,13 +113,15 @@ const Update = ({ setUpdateOpen }) => {
           city,
           profilePic,
         });
+    updateUser({ username, email, name, website, city, profilePic });
+
     setName("");
     setUsername("");
     setEmail("");
     setWebsite("");
     setCity("");
     setProfilePic("");
-    setProfilePic(null);
+    setProfilePicFile(null);
     setIsLoading(false);
     setUpdateOpen(false);
   };

@@ -15,12 +15,20 @@ import { DarkModeContext } from "../../context/DarkModeContext";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { useState } from "react";
+import { useQuery } from "react-query";
+import { axiosInstance } from "../../axios";
 
 const Navbar = () => {
   const [navOpen, setNavOpen] = useState(false);
   const { toggleMode, darkMode } = useContext(DarkModeContext);
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const featuredUsersQuery = useQuery(["featuredUsers"], () =>
+    axiosInstance.get("/users/featured").then((res) => {
+      return res.data;
+    })
+  );
 
   const handleLogout = async () => {
     try {
@@ -29,6 +37,16 @@ const Navbar = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleSignout = () => {
+    setNavOpen(false);
+    logout();
+  };
+
+  const handleProfileView = (id) => {
+    setNavOpen(false);
+    navigate(`/profile/${id}`);
   };
 
   return (
@@ -45,8 +63,8 @@ const Navbar = () => {
           ) : (
             <DarkModeOutlinedIcon className="icon" onClick={toggleMode} />
           )}
-          <LogoutIcon className="icon " onClick={handleLogout} />
-          <GridViewOutlinedIcon className="icon laptop" />
+          <LogoutIcon className="icon laptop" onClick={handleLogout} />
+
           <GridViewOutlinedIcon
             className="icon mobile"
             onClick={() => setNavOpen(true)}
@@ -82,6 +100,55 @@ const Navbar = () => {
       )}
       <div className={`mobileNav ${navOpen ? "open" : ""}`}>
         <CloseIcon className="icon" onClick={() => setNavOpen(false)} />
+        <div className="top">
+          <Link
+            onClick={() => setNavOpen(false)}
+            to={`/profile/${currentUser.id}`}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="user">
+              <img
+                src={
+                  currentUser.profilePic ||
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+                }
+                alt=""
+              />
+              <span>{currentUser.name}</span>
+            </div>
+          </Link>
+          <div className="buttons">
+            <button onClick={handleSignout}>Sign Out</button>
+          </div>
+        </div>
+        <div className="middle">
+          <span>Suggestions For You</span>
+          {featuredUsersQuery.data?.map((user) => {
+            if (user.id === currentUser.id) {
+              return;
+            } else {
+              return (
+                <div className="user">
+                  <div className="userInfo">
+                    <img
+                      src={
+                        user.profilePic ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZvmV2bdt-eITXhe_MeJMt4zKRHatRco1AgPedOFkdvQ&s"
+                      }
+                      alt=""
+                    />
+                    <span>{user.name}</span>
+                  </div>
+                  <div className="buttons">
+                    <button onClick={() => handleProfileView(user.id)}>
+                      View Profile
+                    </button>
+                  </div>
+                </div>
+              );
+            }
+          })}
+        </div>
       </div>
     </div>
   );

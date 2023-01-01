@@ -2,11 +2,20 @@ import { db } from "../connect.js";
 import jwt from "jsonwebtoken";
 
 export const getUser = (req, res) => {
-  let q = "SELECT  * FROM users WHERE id = ? ";
+  let q = "SELECT * FROM users WHERE id = ? ";
   db.query(q, [req.params.userId], (error, data) => {
     if (error) return res.status(500).json(error);
 
     return res.status(200).json(data[0]);
+  });
+};
+
+export const getFeaturedUsers = (req, res) => {
+  let q = "SELECT * FROM users LIMIT 3";
+  db.query(q, (error, data) => {
+    if (error) return res.status(500).json(error);
+
+    return res.status(200).json(data);
   });
 };
 
